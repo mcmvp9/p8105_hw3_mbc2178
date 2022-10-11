@@ -47,6 +47,12 @@ day starting at midnight.
 accel_df =
   read_csv(file = "data/accel_data.csv") %>% 
   janitor::clean_names() %>% 
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "activity_mins",
+    values_to = "activity_cnt"
+  ) %>% 
+  mutate()
 ```
 
 
