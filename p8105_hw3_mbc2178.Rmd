@@ -13,15 +13,23 @@ Let's load in the libraries needed to perform data manipulation and cleaning for
 ```{r message = FALSE}
 library(tidyverse)
 library(dplyr)
+library(readr)
 ```
+
+## Problem 1 
 
 Let's load the `instacart` data from the `p8105.datasets` using the following:
 ```{r}
 library(p8105.datasets)
-data("instacart")
+data("instacart") 
 ```
 
+The `instacart` dataset contains `r nrow(instacart)` observation 
+and `r ncol(instacart)` variables. The variables that exist in this dataset include 
+`r ls(instacart)`. 
 
+
+## Problem 2 
 
 
 
