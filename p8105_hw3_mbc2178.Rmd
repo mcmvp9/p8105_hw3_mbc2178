@@ -9,4 +9,19 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Let's load in the libraries needed to perform data manipulation and cleaning for this assignment.
+```{r message = FALSE}
+library(tidyverse)
+library(dplyr)
+```
+
+Let's load the `instacart` data from the `p8105.datasets` using the following:
+```{r}
+library(p8105.datasets)
+data("instacart")
+```
+
+
+
+
 
