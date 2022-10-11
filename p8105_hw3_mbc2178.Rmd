@@ -31,5 +31,23 @@ and `r ncol(instacart)` variables. The variables that exist in this dataset incl
 
 ## Problem 2 
 
+Let's import the `accel_data` dataset to R. This dataset contains five weeks of 
+accelorometer data collected on a 63 year old male with BMI 25, who was admitted 
+to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed 
+with congestive hear failure (CHF).
+
+We will perform some tidying and wrangle the data before proceeding to perform 
+any analysis. First, we will consider using `janitor::clean_names()` to clean 
+the names of the variables in the dataset. Next, we will use the `pivot_longer`
+function to create a new variable that contains the activity count names and 
+another variable that contains the activity counts for each munute of a 24-hr 
+day starting at midnight.
+
+```{r}
+accel_df =
+  read_csv(file = "data/accel_data.csv") %>% 
+  janitor::clean_names() %>% 
+```
+
 
 
