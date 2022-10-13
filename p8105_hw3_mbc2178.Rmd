@@ -49,11 +49,22 @@ accel_df =
   janitor::clean_names() %>% 
   pivot_longer(
     activity_1:activity_1440,
-    names_to = "activity_mins",
-    values_to = "activity_cnt"
+    names_to = "activity_cnt",
+    names_prefix= "activity_",
+    values_to = "activity_mins"
   ) %>% 
-  mutate()
+  mutate(day_of_week = case_when(
+    day == "Monday" ~ "Weekday",
+    day == "Tuesday" ~ "Weekday",
+    day == "Wednesday" ~ "Weekday",
+    day == "Thursday" ~ "Weekday",
+    day =="Friday" ~ "Weekend",
+    day == "Saturday" ~ "Weekend",
+    day == "Sunday" ~ "Weekend"
+  )) 
 ```
+
+The `accel_df` consists of `r nrow(accel_df)` observations and `r ncol(accel_df)` variables. 
 
 
 
