@@ -193,20 +193,17 @@ Let's load the `ny_noaa` dataset to answer problem 3 using the code below.
 ```{r}
 data("ny_noaa") 
 ```
-Wtite short description describing dataset, size and structure, variables missing data
+The data set `ny_noaa` contains `r nrow(ny_noaa)` and `r ncol(ny_noaa)`. There are 
+lots of missing values in this data set. Reasons for this could be due to the fact
+that about one half of the stations from which the data was collected reported 
+precipitation only. In addition, the duration of record keeping varies by stations 
+and those intervals range from less than a year to more than 175 years. 
 
-about one half of the stations report precipitation only. Both the record length and period of record vary by station and cover intervals ranging from less than a year to more than 175 years.
-
-
-Now we perform some data cleaning 
-ensure that observations for temperature, precipitation, and snowfall are given in reasonable units
-Let's perform some data cleaning on this dataset. We first separate the variable
-`date` into three separate variables, `year`, `month`, and `day`. Convert 
-
-precipitation converted to mm (0.1mm = 0.01cm) divide by 10
-snowfall converted to cm(1mm = 0.1cm) divide by 10
-temperature converted to C (0.1 C = 1C) divide by 10
-tmax same conversions too
+We perform some data cleaning and tidying for this dataset using the code below. 
+We ensured that precipitation (`prcp`) and snowfall (`snow`) were converted to millimeters as well as 
+maximum temperature (`tmax`) and minimum temperature (`tmin`) to degrees Celsius. 
+Furthermore, we separated the variable`date` into three separate variables, `year`, `month`,
+and `day`. We have data from `r min(ny_noaa$date)` to `r max(ny_noaa$date)`.
 
 ```{r}
 noaa_df = 
@@ -227,35 +224,41 @@ noaa_df =
   ) 
 ```
 
-Let's find the count of most common values for snow.
+Let's find the count of most common values for snowfall (`snow`). The table 
+below shows that 0 mm is the most common observation. This is probably because
+from January 1, 1981 through December 31, 2010,the weather in New York was not 
+prone to snow fall during the winter and during the other seasonal months the
+expected snowfall count is 0mm. 
+Global warming and climate change could result in changes in these observations;
+however,that data was not explored in this problem. 
 
 ```{r}
 noaa_df %>% 
-  count(snow, name = "n_obs")
+  count(snow, name = "n_obs") %>% 
+  arrange(desc(n_obs))
+
 ```
 
-The most commonly observed value for snowfall observed from this dateset is 0.0cm. 
-This is probably becuase it doesn't snow a lot in NY. There are many days where 
-NY doesn;t receive a ton of snow. 
- New York state weather stations from January 1, 1981 through December 31, 2010.
 
-
-
-Now let's make a two panel plot showing the average max temperature in January and in
-July in each station across years. 
+Now let's make a two panel plot showing the average max temperature in January and 
+in July in each station across years. 
 
 ```{r}
 noaa_df %>% 
-  group_by(month,year) %>%
-  filter(month == c("01","07")) %>% 
+  filter(month == c("January","July")) %>% 
+  group_by(month, year, id) %>% 
   summarize(
    mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
-  ggplot(aes(x =year, y = mean_tmax, color = month)) +
-  geom_boxplot(alpha = .5) +
-   facet_grid(. ~month)
- 
+  mutate(year = as.factor(year),
+         id = as.factor(id)) %>% 
   
+  ggplot(aes(x=year, y = mean_tmax, )) +
+  geom_boxplot() + facet_grid(~month) +
+labs(title = "Avergae max temp in January & July in weather stations (1981-2010)") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+ 
 ```
+
 Now, we make a two-panel plot showing tmax vs tmin for the full dataset. 
 ```{r}
 
