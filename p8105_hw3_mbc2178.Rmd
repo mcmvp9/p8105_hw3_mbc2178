@@ -10,8 +10,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   fig.width = 6,
   out.width = "90%",
-  fig.height = 6
-  )
+  fig.height = 6)
+  
 ```
 
 Let's load in the packages needed to perform data import,manipulation and cleaning for this assignment.
@@ -21,6 +21,18 @@ library(tidyverse)
 library(dplyr)
 library(readr)
 library(p8105.datasets)
+library(ggridges)
+library(patchwork)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ## Problem 1 
@@ -124,15 +136,17 @@ data("ny_noaa")
 ```
 Wtite short description describing dataset, size and structure, variables missing data
 
+about one half of the stations report precipitation only. Both the record length and period of record vary by station and cover intervals ranging from less than a year to more than 175 years.
+
 
 Now we perform some data cleaning 
 ensure that observations for temperature, precipitation, and snowfall are given in reasonable units
 Let's perform some data cleaning on this dataset. We first separate the variable
 `date` into three separate variables, `year`, `month`, and `day`. Convert 
 
-precipitation converted to cm (0.1mm = 0.01cm) divide by 10
-snowfall converted to cm (1mm = 0.1cm) multiply by 10
-temperature converted to C (0.1 C = 1C) multiply by 10
+precipitation converted to mm (0.1mm = 0.01cm) divide by 10
+snowfall converted to cm(1mm = 0.1cm) divide by 10
+temperature converted to C (0.1 C = 1C) divide by 10
 tmax same conversions too
 
 ```{r}
@@ -142,16 +156,62 @@ noaa_df =
   janitor::clean_names() %>% 
   separate(date, into = c("year", "month", "day")) %>% 
   mutate(
-    prcp = as.numeric(prcp* 10),
-    snow = as.numeric(snow* 10),
-    tmax = as.numeric(tmax*10),
-    tmin = as.numeric(tmin*10))
-    
+      month= month.name[as.numeric(month)],
+      year = as.numeric(year),
+      tmax = as.numeric(tmax),
+      tmin = as.numeric(tmin)) %>% 
+  mutate(
+    tmax = tmax / 10,
+    tmin = tmin / 10,
+    prcp = prcp / 10,
+    snow = snow / 10
+  ) 
 ```
 
-Maybe use lubridate!!!!!
+Let's find the count of most common values for snow.
+
+```{r}
+noaa_df %>% 
+  count(snow, name = "n_obs")
+```
+
+The most commonly observed value for snowfall observed from this dateset is 0.0cm. 
+This is probably becuase it doesn't snow a lot in NY. There are many days where 
+NY doesn;t receive a ton of snow. 
+ New York state weather stations from January 1, 1981 through December 31, 2010.
 
 
+
+Now let's make a two panel plot showing the average max temperature in January and in
+July in each station across years. 
+
+```{r}
+noaa_df %>% 
+  group_by(month,year) %>%
+  filter(month == c("01","07")) %>% 
+  summarize(
+   mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
+  ggplot(aes(x =year, y = mean_tmax, color = month)) +
+  geom_boxplot(alpha = .5) +
+   facet_grid(. ~month)
+ 
+  
+```
+Now, we make a two-panel plot showing tmax vs tmin for the full dataset. 
+```{r}
+
+
+```
+
+Let's make aother plot showing the distribtuion of snowfall values greater than 0 and less 
+than 100 separately by year.
+
+```{r}
+noaa_df %>% 
+  group_by(year, snow) %>% 
+  filter(snow < 100) %>% 
+  summarize()
+```
 
 
 
