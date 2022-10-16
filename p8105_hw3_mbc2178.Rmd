@@ -148,13 +148,18 @@ accel_df =
 ```
 
 The `accel_df` consists of `r nrow(accel_df)` observations and `r ncol(accel_df)` variables. 
-The variables in this dataset include `r(accel_df)`
-The maximum amount of activites that the patient engaged in was `r max(accel_df$activity_cnt)`
-Maybe can add mean amount of mins 
+The variables in this data set include day id, week, number of activity and activity counts 
+measured in minutes. The maximum amount of activities that the patient engaged in was `r max(accel_df$activity)`. 
+Overall, the patient's maximum amount of minutes for any day was `r max(accel_df$activity_cnt)` minutes. 
 
-Now let's use our tidied dataset to understand the total activity over the day. We will aggregate 
-across minutes to create a total activity variable for each and create a table showing these totals. 
-We generated a table below in descending order of total minutes for each day.
+
+Now let's use our tidied data set to understand the total activity over the day for each week.
+We will aggregate across minutes to create a total activity variable for each day and create a 
+table showing these totals. 
+
+From the table below, we can see that there is no inherent trend of minutes per 
+day and week. However, it appears that minutes engaged in activities from Tuesday 
+to Thursday are pretty similar.
 
 ```{r}
 accel_df %>% 
@@ -170,6 +175,9 @@ accel_df %>%
 
 Now, let's create a single panel plot that shows the 24 hour activity courses for each day 
 and use color to indicate the day of the week. 
+From this graph, we can see that the maximum amount of activities and minutes of 
+activities appear to be during the weekend and Monday. Nevertheless, the majority
+of activities were performed in less than 2,500 minutes. 
 
 ```{r}
 accel_df %>% 
@@ -178,10 +186,7 @@ accel_df %>%
   
 ```
 
-Provide description of what's going on here NEED TO FIGURE OUT SORTING ORDER on graph!!!
-
 ##Problem 3 
-
 
 Let's load the `ny_noaa` dataset to answer problem 3 using the code below.
 
