@@ -213,7 +213,7 @@ noaa_df =
   separate(date, into = c("year", "month", "day")) %>% 
   mutate(
       month= month.name[as.numeric(month)],
-      year = as.numeric(year),
+      year = as.factor(year),
       tmax = as.numeric(tmax),
       tmin = as.numeric(tmin)) %>% 
   mutate(
@@ -257,11 +257,15 @@ noaa_df %>%
   group_by(month,year, id) %>% 
   summarize(
    mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
-  mutate(year = as.numeric(year)) %>% 
+  drop_na(mean_tmax) %>% 
   
   ggplot(aes(x= year, y = mean_tmax, group = id)) +
   geom_point(size = .5, color = "blue") +
-  facet_grid(~ month) 
+  facet_grid(~ month) + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(title = "Avg. max temperature in Jan. & Jul. by station across years",
+      x = "years",
+      y = "average max temp")
 
 ```
 
@@ -273,7 +277,8 @@ tmx_min_p =
 noaa_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
   geom_hex() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs( title = "Max temp vs Min temp")
 
 ```
 
@@ -282,17 +287,22 @@ than 100 separately by year.The distribution of snowfall across the years on ave
 appear to be the relatively stable 
 
 ```{r}
-snow_p= 
-noaa_df %>%
+snow_p=
+noaa_df %>% 
   filter(snow < 0:100) %>% 
-  ggplot(aes(x = snow, group =year, fill = year )) +
-  geom_density(alpha = 0.5) + 
-  facet_wrap(~year)
+  ggplot(aes(x=snow, y=year, fill =year)) + 
+  geom_density_ridges(alpha = .5, scale = .5) + 
+  theme(legend.position = "none") +
+  labs(title = "Distribution of snowfall values between 0-100mm by year")
+  
+
 ```
+We combine both graphs created above to display a two-panel  plot showing 
+maximum temperature vs minimum temperature as well as the distribution of 
+snowfall between 0 and 100 mm by year. 
 
 ```{r}
 tmx_min_p + snow_p
-
 ```
 
 
