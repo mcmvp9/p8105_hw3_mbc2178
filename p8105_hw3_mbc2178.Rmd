@@ -257,8 +257,9 @@ noaa_df %>%
   group_by(month, id) %>% 
   summarize(
    mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
+  mutate(year = as.factor(id)) %>% 
   
-  ggplot(aes(x= id, y = mean_tmax)) +
+  ggplot(aes(x=year, y = mean_tmax)) +
   geom_point() + 
   facet_grid(~ month) 
 
@@ -268,7 +269,7 @@ noaa_df %>%
 Now, we make a two-panel plot showing tmax vs tmin for the full data set. 
 
 ```{r}
-tmx_min =
+tmx_min_p =
 noaa_df %>%
   ggplot(aes(x = tmin, y = tmax)) +
   geom_hex() +
@@ -280,17 +281,16 @@ Let's make another plot showing the distribution of snowfall values greater than
 than 100 separately by year.
 
 ```{r}
-snow_p = 
-noaa_df %>% 
-  filter(snow < 100) %>% 
-  ggplot(aes(x = snow, y= year)) +
-  geom_violin() + 
-  facet_grid(~ year) + 
-   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+snow_p= 
+noaa_df %>%
+  filter(snow < 0:100) %>% 
+  ggplot(aes(x = snow, group =year, fill = year )) +
+  geom_density(alpha = 0.5) + 
+  facet_wrap(~year)
 ```
 
 ```{r}
-tmx_min + snow_p
+tmx_min_p + snow_p
 
 ```
 
