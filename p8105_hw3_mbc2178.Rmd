@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   
 ```
 
-Let's load in the packages needed to perform data import,manipulation and cleaning for this assignment.
+Let's load in the packages needed to perform data import, manipulation and cleaning for this assignment. Themes and color options also added.
 
 ```{r message = FALSE}
 library(tidyverse)
@@ -116,9 +116,9 @@ We will perform some tidying and wrangle the data before proceeding to perform
 any analysis. First, we will consider using `janitor::clean_names()` to clean 
 the names of the variables in the dataset. Next, we will use the `pivot_longer`
 function to create a new variable that contains the activity count names and 
-another variable that contains the activity counts for each munute of a 24-hr 
-day starting at midnight. We arranged dataset according to day of week and 
-converted day to a factor variable for 
+another variable that contains the activity counts for each minute of a 24-hr 
+day starting at midnight. We arranged the data set according to day of week and 
+converted day to a factor variable.  
 
 ```{r}
 accel_df =
@@ -159,7 +159,7 @@ table showing these totals.
 
 From the table below, we can see that there is no inherent trend of minutes per 
 day and week. However, it appears that minutes engaged in activities from Tuesday 
-to Thursday are pretty similar.
+to Thursday are pretty similar. The maximum amount of activities performed measured in minutes was on Monday during week 3.
 
 ```{r}
 accel_df %>% 
@@ -186,20 +186,22 @@ accel_df %>%
   
 ```
 
-##Problem 3 
+## Problem 3 
 
 Let's load the `ny_noaa` dataset to answer problem 3 using the code below.
 
 ```{r}
 data("ny_noaa") 
 ```
-The data set `ny_noaa` contains `r nrow(ny_noaa)` and `r ncol(ny_noaa)`. There are 
+The data set `ny_noaa` contains `r nrow(ny_noaa)` observations and `r ncol(ny_noaa)` variables. There are 
 lots of missing values in this data set. Reasons for this could be due to the fact
 that about one half of the stations from which the data was collected reported 
 precipitation only. In addition, the duration of record keeping varies by stations 
 and those intervals range from less than a year to more than 175 years. 
+In this data set, for example the number of missing values for snowfall
+was 381,221.
 
-We perform some data cleaning and tidying for this dataset using the code below. 
+We perform some data cleaning and tidying for this data set using the code below. 
 We ensured that precipitation (`prcp`) and snowfall (`snow`) were converted to millimeters as well as 
 maximum temperature (`tmax`) and minimum temperature (`tmin`) to degrees Celsius. 
 Furthermore, we separated the variable`date` into three separate variables, `year`, `month`,
@@ -228,9 +230,9 @@ Let's find the count of most common values for snowfall (`snow`). The table
 below shows that 0 mm is the most common observation. This is probably because
 from January 1, 1981 through December 31, 2010,the weather in New York was not 
 prone to heavy snow fall during the winter and during the other seasonal months the
-expected snowfall count is 0mm. 
+expected snowfall count is 0mm because snow is not possible.
 Global warming and climate change could result in changes in these observations;
-however,that data was not explored in this problem. 
+however, that data was not explored in this problem. 
 
 ```{r}
 noaa_df %>% 
@@ -244,11 +246,12 @@ Now let's make a two panel plot showing the average max temperature in January a
 in July in each station across years. 
 From the graph below, the average temperature in January as expected over the 
 years ranges from below 0 to 10 degrees Celsius, with a few exceptions of outliers. 
-For example, in 1982, the temperature dropped below -10 degrees Celsius. 
+For example, in 1982, the temperature dropped below -10 degrees Celsius and in 
+2004, the temperature was close to 15 degrees Celsius.
 
 In addition, in July as expected the average temperature was around 25 and 30 degrees 
 Celsius. A few outliers were observed, for example, in 1987, the average temperature
-was around 15 degrees Celsius. 
+was around 15 degrees Celsius which is pretty unusual for that time of the year. 
 
 
 ```{r}
@@ -260,7 +263,7 @@ noaa_df %>%
   drop_na(mean_tmax) %>% 
   
   ggplot(aes(x= year, y = mean_tmax, group = id)) +
-  geom_point(size = .5, color = "blue") +
+  geom_point(size = .5, color = "gray48") +
   facet_grid(~ month) + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
   labs(title = "Avg. max temperature in Jan. & Jul. by station across years",
@@ -270,7 +273,8 @@ noaa_df %>%
 ```
 
 
-Now, we make a two-panel plot showing tmax vs tmin for the full data set. 
+Now, we make a two-panel plot showing tmax vs tmin for the full data set.
+(*Graph will be shown at bottom of document)
 
 ```{r}
 tmx_min_p =
@@ -284,7 +288,8 @@ noaa_df %>%
 
 Let's make another plot showing the distribution of snowfall values greater than 0 and less 
 than 100 separately by year.The distribution of snowfall across the years on average
-appear to be the relatively stable 
+appear to be relatively similar with differing peaks during some years.
+(*Graph will be shown at bottom of document)
 
 ```{r}
 snow_p=
