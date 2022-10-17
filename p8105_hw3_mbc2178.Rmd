@@ -242,39 +242,57 @@ noaa_df %>%
 
 Now let's make a two panel plot showing the average max temperature in January and 
 in July in each station across years. 
+From the graph below, the average temperature in January as expected over the 
+years ranges from below 0 to 10 degrees Celsius, with a few exceptions of outliers. 
+For example, in 1982, the temperature dropped below -10 degrees Celsius. 
+
+In addition, in July as expected the average temperature was around 25 and 30 degrees 
+Celsius. A few outliers were observed, for example, in 1987, the average temperature
+was around 15 degrees Celsius. 
+
 
 ```{r}
 noaa_df %>% 
   filter(month == c("January","July")) %>% 
-  group_by(month, year, id) %>% 
+  group_by(month, id) %>% 
   summarize(
    mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
-  mutate(year = as.factor(year),
-         id = as.factor(id)) %>% 
   
-  ggplot(aes(x=year, y = mean_tmax, )) +
-  geom_boxplot() + facet_grid(~month) +
-labs(title = "Avergae max temp in January & July in weather stations (1981-2010)") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
- 
+  ggplot(aes(x= id, y = mean_tmax)) +
+  geom_point() + 
+  facet_grid(~ month) 
+
 ```
 
-Now, we make a two-panel plot showing tmax vs tmin for the full dataset. 
+
+Now, we make a two-panel plot showing tmax vs tmin for the full data set. 
+
 ```{r}
-
+tmx_min =
+noaa_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex() +
+  theme(legend.position = "none")
 
 ```
 
-Let's make aother plot showing the distribtuion of snowfall values greater than 0 and less 
+Let's make another plot showing the distribution of snowfall values greater than 0 and less 
 than 100 separately by year.
 
 ```{r}
+snow_p = 
 noaa_df %>% 
-  group_by(year, snow) %>% 
   filter(snow < 100) %>% 
-  summarize()
+  ggplot(aes(x = snow, y= year)) +
+  geom_violin() + 
+  facet_grid(~ year) + 
+   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
 
+```{r}
+tmx_min + snow_p
+
+```
 
 
 
