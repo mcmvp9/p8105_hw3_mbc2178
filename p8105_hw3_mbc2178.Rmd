@@ -120,7 +120,7 @@ another variable that contains the activity counts for each munute of a 24-hr
 day starting at midnight. We arranged dataset according to day of week and 
 converted day to a factor variable for 
 
-```{r , results=hide}
+```{r}
 accel_df =
   read_csv(file = "data/accel_data.csv") %>% 
   janitor::clean_names() %>% 
@@ -227,7 +227,7 @@ noaa_df =
 Let's find the count of most common values for snowfall (`snow`). The table 
 below shows that 0 mm is the most common observation. This is probably because
 from January 1, 1981 through December 31, 2010,the weather in New York was not 
-prone to snow fall during the winter and during the other seasonal months the
+prone to heavy snow fall during the winter and during the other seasonal months the
 expected snowfall count is 0mm. 
 Global warming and climate change could result in changes in these observations;
 however,that data was not explored in this problem. 
@@ -254,13 +254,13 @@ was around 15 degrees Celsius.
 ```{r}
 noaa_df %>% 
   filter(month == c("January","July")) %>% 
-  group_by(month, id) %>% 
+  group_by(month,year, id) %>% 
   summarize(
    mean_tmax = mean(tmax, na.rm = TRUE)) %>% 
-  mutate(year = as.factor(id)) %>% 
+  mutate(year = as.numeric(year)) %>% 
   
-  ggplot(aes(x=year, y = mean_tmax)) +
-  geom_point() + 
+  ggplot(aes(x= year, y = mean_tmax, group = id)) +
+  geom_point(size = .5, color = "blue") +
   facet_grid(~ month) 
 
 ```
@@ -278,7 +278,8 @@ noaa_df %>%
 ```
 
 Let's make another plot showing the distribution of snowfall values greater than 0 and less 
-than 100 separately by year.
+than 100 separately by year.The distribution of snowfall across the years on average
+appear to be the relatively stable 
 
 ```{r}
 snow_p= 
